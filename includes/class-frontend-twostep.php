@@ -295,17 +295,18 @@ class ComentariosFree_Frontend_TwoStep {
     
     private function format_travel_companion($travel_companion) {
         $companions = array(
-            'solo' => 'solo',
-            'en_pareja' => 'en pareja',
-            'en_familia' => 'en familia',
-            'con_amigos' => 'con amigos',
+            'solo' => 'option_solo',
+            'en_pareja' => 'option_couple',
+            'en_familia' => 'option_family',
+            'con_amigos' => 'option_friends',
             // Soporte retrocompatible para valores antiguos
-            'pareja' => 'en pareja',
-            'familia' => 'en familia',
-            'amigos' => 'con amigos'
+            'pareja' => 'option_couple',
+            'familia' => 'option_family',
+            'amigos' => 'option_friends'
         );
         
-        return isset($companions[$travel_companion]) ? $companions[$travel_companion] : $travel_companion;
+        $translation_key = isset($companions[$travel_companion]) ? $companions[$travel_companion] : null;
+        return $translation_key ? cf_trans($translation_key) : $travel_companion;
     }
     
     /**
