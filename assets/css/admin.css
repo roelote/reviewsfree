@@ -1,0 +1,522 @@
+/* CSS Admin para Comentarios Free Plugin */
+
+/* Variables específicas del admin */
+:root {
+    --cf-admin-primary: #0073aa;
+    --cf-admin-secondary: #f1f1f1;
+    --cf-admin-success: #00a32a;
+    --cf-admin-warning: #dba617;
+    --cf-admin-danger: #d63638;
+    --cf-admin-border: #ccd0d4;
+    --cf-admin-shadow: 0 1px 3px rgba(0, 0, 0, 0.13);
+    --cf-admin-radius: 4px;
+}
+
+/* Páginas del plugin */
+.comentarios-free-admin-page {
+    background: #fff;
+    margin: 0;
+}
+
+/* Estadísticas en grid */
+.comentarios-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid var(--cf-admin-border);
+    border-radius: var(--cf-admin-radius);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--cf-admin-shadow);
+    transition: box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--cf-admin-primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Estados de comentarios en la tabla */
+.status-approved {
+    color: var(--cf-admin-success);
+    font-weight: bold;
+}
+
+.status-pending {
+    color: var(--cf-admin-warning);
+    font-weight: bold;
+}
+
+.status-spam {
+    color: var(--cf-admin-danger);
+    font-weight: bold;
+}
+
+/* Estrellas en el admin */
+.wp-list-table .star {
+    color: #ffd700;
+    font-size: 1rem;
+    margin-right: 1px;
+}
+
+.wp-list-table .star.empty {
+    color: #ddd;
+}
+
+/* Columnas específicas de la tabla */
+.wp-list-table .column-author {
+    width: 15%;
+}
+
+.wp-list-table .column-comment {
+    width: 30%;
+}
+
+.wp-list-table .column-rating {
+    width: 10%;
+    text-align: center;
+}
+
+.wp-list-table .column-response {
+    width: 20%;
+}
+
+.wp-list-table .column-date {
+    width: 12%;
+}
+
+.wp-list-table .column-status {
+    width: 8%;
+    text-align: center;
+}
+
+.wp-list-table .column-actions {
+    width: 5%;
+}
+
+/* Contenido del comentario en la tabla */
+.comment-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.comment-content {
+    color: #666;
+    line-height: 1.4;
+}
+
+.comment-images {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #999;
+}
+
+/* Acciones de fila */
+.row-actions {
+    visibility: hidden;
+    transition: visibility 0.2s ease;
+}
+
+.wp-list-table tr:hover .row-actions {
+    visibility: visible;
+}
+
+.row-actions span {
+    display: inline;
+}
+
+.row-actions .approve a {
+    color: var(--cf-admin-success);
+}
+
+.row-actions .spam a {
+    color: var(--cf-admin-warning);
+}
+
+.row-actions .delete a {
+    color: var(--cf-admin-danger);
+}
+
+.row-actions a:hover {
+    text-decoration: underline;
+}
+
+/* Filtros del admin */
+.tablenav .actions select {
+    margin-right: 0.5rem;
+}
+
+/* Formulario de configuración */
+.form-table th {
+    padding-left: 0;
+}
+
+.form-table td input[type="number"],
+.form-table td input[type="email"],
+.form-table td input[type="text"] {
+    width: auto;
+    min-width: 200px;
+}
+
+.form-table .description {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #666;
+}
+
+/* Checkboxes en configuración */
+.form-table input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.form-table label {
+    display: flex;
+    align-items: center;
+}
+
+/* Botón principal del plugin */
+.comentarios-free-primary-button {
+    background: var(--cf-admin-primary) !important;
+    border-color: var(--cf-admin-primary) !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+.comentarios-free-primary-button:hover {
+    background: #005a87 !important;
+    border-color: #005a87 !important;
+}
+
+/* Notificaciones personalizadas */
+.comentarios-admin-notice {
+    border-left: 4px solid var(--cf-admin-primary);
+    background: #f0f6fc;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 var(--cf-admin-radius) var(--cf-admin-radius) 0;
+}
+
+.comentarios-admin-notice.success {
+    border-left-color: var(--cf-admin-success);
+    background: #f0fff4;
+}
+
+.comentarios-admin-notice.warning {
+    border-left-color: var(--cf-admin-warning);
+    background: #fffbf0;
+}
+
+.comentarios-admin-notice.error {
+    border-left-color: var(--cf-admin-danger);
+    background: #fdf2f2;
+}
+
+/* Metaboxes personalizados */
+.comentarios-metabox {
+    background: #fff;
+    border: 1px solid var(--cf-admin-border);
+    border-radius: var(--cf-admin-radius);
+    box-shadow: var(--cf-admin-shadow);
+}
+
+.comentarios-metabox-header {
+    background: var(--cf-admin-secondary);
+    padding: 1rem;
+    border-bottom: 1px solid var(--cf-admin-border);
+    font-weight: 600;
+}
+
+.comentarios-metabox-content {
+    padding: 1rem;
+}
+
+/* Loading states para el admin */
+.comentarios-admin-loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.comentarios-admin-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--cf-admin-primary);
+    border-radius: 50%;
+    animation: admin-spin 1s linear infinite;
+}
+
+@keyframes admin-spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive para admin */
+@media screen and (max-width: 782px) {
+    .comentarios-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wp-list-table .column-author,
+    .wp-list-table .column-response {
+        display: none;
+    }
+    
+    .wp-list-table .column-comment {
+        width: 50%;
+    }
+}
+
+/* Mejoras para accesibilidad en admin */
+.comentarios-free-admin-page *:focus {
+    outline: 2px solid var(--cf-admin-primary);
+    outline-offset: 2px;
+}
+
+.comentarios-free-admin-page button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Tooltips para el admin */
+.comentarios-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.comentarios-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: var(--cf-admin-radius);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.comentarios-tooltip:hover::after {
+    opacity: 1;
+}
+
+/* Breadcrumb para navegación del admin */
+.comentarios-breadcrumb {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.comentarios-breadcrumb a {
+    color: var(--cf-admin-primary);
+    text-decoration: none;
+}
+
+.comentarios-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.comentarios-breadcrumb .separator {
+    margin: 0 0.5rem;
+    color: #ccc;
+}
+
+/* Tabs para secciones del admin */
+.comentarios-admin-tabs {
+    border-bottom: 1px solid var(--cf-admin-border);
+    margin-bottom: 2rem;
+}
+
+.comentarios-admin-tabs ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.comentarios-admin-tabs li {
+    margin-right: 1rem;
+}
+
+.comentarios-admin-tabs a {
+    display: block;
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.comentarios-admin-tabs a:hover,
+.comentarios-admin-tabs a.active {
+    color: var(--cf-admin-primary);
+    border-bottom-color: var(--cf-admin-primary);
+}
+
+/* Dashicons personalizados para el plugin */
+.comentarios-free-icon::before {
+    font-family: dashicons;
+    content: '\f155'; /* estrella */
+    font-size: 1.2em;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+/* Estilos para campos de búsqueda */
+.comentarios-search-box {
+    position: relative;
+    display: inline-block;
+}
+
+.comentarios-search-box input[type="search"] {
+    padding-right: 2.5rem;
+}
+
+.comentarios-search-box .search-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Estilos para la paginación personalizada */
+.comentarios-pagination {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.comentarios-pagination a,
+.comentarios-pagination span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    text-decoration: none;
+    color: var(--cf-admin-primary);
+    border: 1px solid var(--cf-admin-border);
+    border-radius: var(--cf-admin-radius);
+}
+
+.comentarios-pagination .current {
+    background: var(--cf-admin-primary);
+    color: #fff;
+    border-color: var(--cf-admin-primary);
+}
+
+.comentarios-pagination a:hover {
+    background: var(--cf-admin-secondary);
+}
+
+/* Mejoras para el sistema de ayuda */
+.comentarios-help-section {
+    background: #f9f9f9;
+    border: 1px solid var(--cf-admin-border);
+    border-radius: var(--cf-admin-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.comentarios-help-section h4 {
+    margin-top: 0;
+    color: var(--cf-admin-primary);
+}
+
+.comentarios-help-section code {
+    background: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2px;
+    font-size: 0.9em;
+}
+
+/* Estados de sincronización/backup */
+.comentarios-sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--cf-admin-radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.comentarios-sync-status.success {
+    background: rgba(0, 163, 42, 0.1);
+    color: var(--cf-admin-success);
+    border: 1px solid rgba(0, 163, 42, 0.2);
+}
+
+.comentarios-sync-status.warning {
+    background: rgba(219, 166, 23, 0.1);
+    color: var(--cf-admin-warning);
+    border: 1px solid rgba(219, 166, 23, 0.2);
+}
+
+.comentarios-sync-status.error {
+    background: rgba(214, 54, 56, 0.1);
+    color: var(--cf-admin-danger);
+    border: 1px solid rgba(214, 54, 56, 0.2);
+}
+
+/* Animaciones sutiles para el admin */
+@keyframes comentarios-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.comentarios-fade-in {
+    animation: comentarios-fade-in 0.3s ease-out;
+}
+
+/* Print styles para reportes */
+@media print {
+    .comentarios-free-admin-page .tablenav,
+    .comentarios-free-admin-page .row-actions {
+        display: none !important;
+    }
+    
+    .comentarios-free-admin-page {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .stat-card {
+        border: 2px solid #000 !important;
+        break-inside: avoid;
+    }
+}
