@@ -35,35 +35,35 @@ return array(
     
     // Opciones de "Con quién viajaste"
     'option_solo' => array(
-        'es' => 'Solo',
-        'en' => 'Solo',
-        'pt-br' => 'Sozinho',
-        'fr' => 'Seul',
-        'it' => 'Solo'
+        'es' => 'solo',
+        'en' => 'solo',
+        'pt-br' => 'sozinho',
+        'fr' => 'seul',
+        'it' => 'solo'
     ),
     
     'option_couple' => array(
-        'es' => 'En pareja',
-        'en' => 'As a couple',
-        'pt-br' => 'Em casal',
-        'fr' => 'En couple',
-        'it' => 'In coppia'
+        'es' => 'en pareja',
+        'en' => 'as a couple',
+        'pt-br' => 'em casal',
+        'fr' => 'en couple',
+        'it' => 'in coppia'
     ),
     
     'option_family' => array(
-        'es' => 'En familia',
-        'en' => 'With family',
-        'pt-br' => 'Em família',
-        'fr' => 'En famille',
-        'it' => 'In famiglia'
+        'es' => 'en familia',
+        'en' => 'with family',
+        'pt-br' => 'em família',
+        'fr' => 'en famille',
+        'it' => 'in famiglia'
     ),
     
     'option_friends' => array(
-        'es' => 'Con amigos',
-        'en' => 'With friends',
-        'pt-br' => 'Com amigos',
-        'fr' => 'Avec des amis',
-        'it' => 'Con amici'
+        'es' => 'con amigos',
+        'en' => 'with friends',
+        'pt-br' => 'com amigos',
+        'fr' => 'avec des amis',
+        'it' => 'con amici'
     ),
     
     // Campo idioma

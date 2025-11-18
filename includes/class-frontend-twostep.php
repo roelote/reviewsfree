@@ -243,9 +243,11 @@ class ComentariosFree_Frontend_TwoStep {
             
             // Respuesta del administrador (dentro de cf-center-column)
             if (!empty($comment->admin_response)) {
+                $favicon_url = get_site_icon_url(16);
+                $favicon_html = $favicon_url ? '<img src="' . esc_url($favicon_url) . '" alt="Admin" class="cf-admin-icon"> ' : '👨‍💼 ';
                 $output .= '<div class="bodydesp">
                     <div class="test">
-                        <span class="cf-admin-badge">👨‍💼 ' . cf_trans('response') . '</span>
+                        <span class="cf-admin-badge">' . $favicon_html . cf_trans('response') . '</span>
                     </div>
                     <div class="cf-admin-response-content">
                         ' . $this->truncate_text($comment->admin_response, 237) . '
@@ -1079,6 +1081,16 @@ class ComentariosFree_Frontend_TwoStep {
             font-weight: 600;
             color: #333;
             font-family: nunito;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .cf-admin-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            vertical-align: middle;
         }
         
         .cf-admin-response-content {
