@@ -262,7 +262,7 @@ class ComentariosFree_Frontend_TwoStep {
                             <span class="cf-date">' . $formatted_date . '</span>
                         </div>
                         <div class="cf-travel-companion">
-                            <span class="cf-companion-text">Viajó ' . $this->format_travel_companion($comment->travel_companion) . '</span>
+                            <span class="cf-companion-text">' . cf_trans('traveled_prefix') . ' ' . $this->format_travel_companion($comment->travel_companion) . '</span>
                         </div>
                     </div>
                 </div>';
