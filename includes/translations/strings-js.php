@@ -112,4 +112,20 @@ return array(
         'fr' => 'Voir mon avis',
         'it' => 'Vedi la mia recensione'
     ),
+    
+    'load_more' => array(
+        'es' => 'Ver más comentarios',
+        'en' => 'Load more reviews',
+        'pt-br' => 'Ver mais avaliações',
+        'fr' => 'Voir plus d\'avis',
+        'it' => 'Vedi più recensioni'
+    ),
+    
+    'remaining' => array(
+        'es' => 'restantes',
+        'en' => 'remaining',
+        'pt-br' => 'restantes',
+        'fr' => 'restants',
+        'it' => 'rimanenti'
+    ),
 );

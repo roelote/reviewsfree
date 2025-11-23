@@ -317,7 +317,7 @@ class ComentariosFree {
                 <?php echo number_format($average, 1); ?>
             </span>
             <span class="comentarios-total" style="font-size: 14px; color: #666;">
-                (<?php echo $total; ?> <?php echo $total == 1 ? __('reseña', 'comentarios-free') : __('reseñas', 'comentarios-free'); ?>)
+                (<?php echo $total; ?> <?php echo $total == 1 ? ComentariosFree_Translations::get('review') : ComentariosFree_Translations::get('reviews'); ?>)
             </span>
         </div>
         <?php

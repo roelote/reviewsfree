@@ -2500,7 +2500,7 @@ class ComentariosFree_Frontend_TwoStep {
                             var remaining = total - newOffset;
                             
                             if (remaining > 0) {
-                                $btn.html("Ver más comentarios (" + remaining + " restantes)").prop("disabled", false).data("loading", false);
+                                $btn.html(cfTranslations.load_more + " (" + remaining + " " + cfTranslations.remaining + ")").prop("disabled", false).data("loading", false);
                             } else {
                                 // No hay más comentarios, ocultar botón
                                 $(".cf-load-more-container").fadeOut(300);

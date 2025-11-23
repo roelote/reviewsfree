@@ -34,9 +34,12 @@ class ComentariosFree_Rich_Snippets {
         
         global $post;
         
-        // Obtener comentarios con rating para este post
+        // Obtener ID del post original (para compatibilidad WPML/multiidioma)
+        $original_post_id = $this->get_original_post_id($post->ID);
+        
+        // Obtener comentarios con rating para este post (usando ID original)
         $comments = $this->database->get_comments(array(
-            'post_id' => $post->ID,
+            'post_id' => $original_post_id,
             'status' => 'approved'
         ));
         
@@ -44,12 +47,15 @@ class ComentariosFree_Rich_Snippets {
             return;
         }
         
-        // Calcular estadísticas de rating
-        $rating_stats = $this->database->get_rating_stats($post->ID);
+        // Calcular estadísticas de rating (usando ID original)
+        $rating_stats = $this->database->get_rating_stats($original_post_id);
         
         if (!$rating_stats || $rating_stats->total_reviews == 0) {
             return;
         }
+        
+        // Obtener idioma actual
+        $current_lang = $this->get_current_language();
         
         // CREAR UN SOLO OBJETO PRODUCT CON TODAS LAS REVIEWS DENTRO
         $structured_data = array(
@@ -57,7 +63,7 @@ class ComentariosFree_Rich_Snippets {
             '@type' => 'Product',  // SIEMPRE Product para fragmentos de productos
             'name' => get_the_title($post->ID),
             'description' => $this->get_post_description($post),
-            'url' => get_permalink($post->ID),
+            'url' => $this->get_language_permalink($post->ID, $current_lang),
             'image' => $this->get_post_image($post),
             'brand' => array(
                 '@type' => 'Brand',
@@ -73,6 +79,9 @@ class ComentariosFree_Rich_Snippets {
             ),
             'review' => array()
         );
+        
+        // Añadir idioma del contenido
+        $structured_data['inLanguage'] = $current_lang;
         
         // Añadir reseñas individuales (máximo 15 para más visibilidad)
         $featured_comments = array_slice($comments, 0, 15);
@@ -99,6 +108,11 @@ class ComentariosFree_Rich_Snippets {
                         'worstRating' => 1
                     )
                 );
+                
+                // Añadir idioma de la reseña si está disponible
+                if (!empty($comment->language)) {
+                    $review['inLanguage'] = $comment->language;
+                }
                 
                 // Añadir país si está disponible
                 if (!empty($comment->country)) {
@@ -383,5 +397,83 @@ class ComentariosFree_Rich_Snippets {
         if (!empty($faq_schema['mainEntity'])) {
             echo '<script type="application/ld+json">' . json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>' . "\n";
         }
+    }
+    
+    /**
+     * Obtener idioma actual del sitio
+     * @return string Código de idioma
+     */
+    private function get_current_language() {
+        // Usar la clase de traducciones del plugin
+        if (class_exists('ComentariosFree_Translations')) {
+            return ComentariosFree_Translations::get_current_language();
+        }
+        
+        // Fallback: detectar WPML
+        if (defined('ICL_LANGUAGE_CODE')) {
+            return ICL_LANGUAGE_CODE;
+        }
+        
+        // Fallback: español
+        return 'es';
+    }
+    
+    /**
+     * Obtener ID del post original (para compatibilidad multiidioma)
+     * Si es una traducción, devuelve el ID del post en el idioma original
+     * @param int $post_id ID del post actual
+     * @return int ID del post original
+     */
+    private function get_original_post_id($post_id) {
+        // WPML - obtener ID del post original
+        if (function_exists('icl_object_id')) {
+            // Obtener el idioma por defecto
+            global $sitepress;
+            if ($sitepress) {
+                $default_lang = $sitepress->get_default_language();
+                // Obtener el ID del post en el idioma original
+                $original_id = icl_object_id($post_id, 'post', false, $default_lang);
+                return $original_id ? $original_id : $post_id;
+            }
+        }
+        
+        // Polylang - obtener ID del post original
+        if (function_exists('pll_get_post')) {
+            $default_lang = pll_default_language();
+            $original_id = pll_get_post($post_id, $default_lang);
+            if ($original_id) {
+                return $original_id;
+            }
+        }
+        
+        // Si no hay plugin multiidioma, retornar el mismo ID
+        return $post_id;
+    }
+    
+    /**
+     * Obtener permalink en un idioma específico
+     * @param int $post_id ID del post
+     * @param string $lang Código de idioma
+     * @return string URL del post
+     */
+    private function get_language_permalink($post_id, $lang) {
+        // WPML
+        if (defined('ICL_LANGUAGE_CODE') && function_exists('wpml_object_id_filter')) {
+            $translated_id = apply_filters('wpml_object_id', $post_id, 'post', false, $lang);
+            if ($translated_id && $translated_id !== $post_id) {
+                return get_permalink($translated_id);
+            }
+        }
+        
+        // Polylang
+        if (function_exists('pll_get_post')) {
+            $translated_id = pll_get_post($post_id, $lang);
+            if ($translated_id) {
+                return get_permalink($translated_id);
+            }
+        }
+        
+        // Fallback: permalink normal
+        return get_permalink($post_id);
     }
 }
