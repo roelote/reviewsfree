@@ -135,31 +135,42 @@ class ComentariosFree_Frontend_TwoStep {
         
         echo '</div>'; // fin cf-filters-stats-bar
         
-        // Lista de comentarios - mostrar solo los primeros 5
-        $initial_limit = 5;
-        $comments = $this->database->get_comments(array(
+        // ⚡ OPTIMIZACIÓN SEO: Cargar TODOS los comentarios en el HTML inicial
+        // para que Google pueda indexarlos, pero mostrar solo los primeros 5 visualmente
+        $initial_visible = 5;
+        $load_increment = 5; // Cargar 5 más cada vez
+        $all_comments = $this->database->get_comments(array(
             'post_id' => $post_id,
-            'limit' => $initial_limit,
-            'status' => 'approved'
+            'status' => 'approved',
+            'limit' => 0  // 0 = sin límite, cargar TODOS los comentarios
         ));
         
-        // Verificar si hay más comentarios
-        $total_comments = $this->database->get_comments_count(array(
-            'post_id' => $post_id,
-            'status' => 'approved'
-        ));
-        $has_more = $total_comments > $initial_limit;
+        $total_comments = count($all_comments);
+        $has_more = $total_comments > $initial_visible;
         
-        echo '<div class="cf-comments-list" data-post-id="' . $post_id . '" data-offset="' . $initial_limit . '" data-total="' . $total_comments . '">';
-        echo $this->render_comments($comments);
+        echo '<div class="cf-comments-list" data-post-id="' . $post_id . '" data-current-visible="' . $initial_visible . '" data-load-increment="' . $load_increment . '" data-total="' . $total_comments . '">';
+        
+        // Renderizar comentarios con clase para controlar visibilidad
+        if (!empty($all_comments)) {
+            foreach ($all_comments as $index => $comment) {
+                // Los primeros 5 siempre visibles, los demás ocultos por CSS
+                $is_hidden = $index >= $initial_visible;
+                echo '<div class="cf-comment-wrapper' . ($is_hidden ? ' cf-hidden-comment' : '') . '" data-comment-index="' . $index . '">';
+                echo $this->render_single_comment($comment);
+                echo '</div>';
+            }
+        } else {
+            echo '<div class="cf-no-comments"><p>' . cf_trans('no_reviews') . '</p></div>';
+        }
+        
         echo '</div>';
         
-        // Botón "Ver más" si hay más de 5 comentarios
+        // Botón "Ver más" si hay más de 5 comentarios (carga progresiva de 5 en 5)
         if ($has_more) {
-            $remaining = $total_comments - $initial_limit;
+            $next_batch = min($load_increment, $total_comments - $initial_visible);
             echo '<div class="cf-load-more-container" style="text-align: center; margin: 20px 0;">
-                    <button id="cf-load-more-btn" class="cf-btn cf-btn-secondary" data-loading="false">
-                        ' . cf_trans('load_more') . ' (' . $remaining . ' ' . cf_trans('remaining') . ')
+                    <button id="cf-show-more-btn" class="cf-btn cf-btn-secondary">
+                        ' . cf_trans('load_more') . ' (' . $next_batch . ')
                     </button>
                   </div>';
         }
@@ -177,13 +188,10 @@ class ComentariosFree_Frontend_TwoStep {
         return ob_get_clean();
     }
     
-    private function render_comments($comments) {
-        if (empty($comments)) {
-            return '<div class="cf-no-comments"><p>' . cf_trans('no_reviews') . '</p></div>';
-        }
-        
-        $output = '';
-        foreach ($comments as $comment) {
+    /**
+     * Renderizar un solo comentario (usado para SSR y AJAX)
+     */
+    private function render_single_comment($comment) {
             // Obtener la fecha formateada
             $date = new DateTime($comment->created_at);
             $formatted_date = $date->format('d / F / Y');
@@ -269,7 +277,22 @@ class ComentariosFree_Frontend_TwoStep {
                     </div>
                 </div>';
             
-            $output .= '</div>'; // Cerrar cf-comment
+        $output .= '</div>'; // Cerrar cf-comment
+        
+        return $output;
+    }
+    
+    /**
+     * Renderizar múltiples comentarios (wrapper que usa render_single_comment)
+     */
+    private function render_comments($comments) {
+        if (empty($comments)) {
+            return '<div class="cf-no-comments"><p>' . cf_trans('no_reviews') . '</p></div>';
+        }
+        
+        $output = '';
+        foreach ($comments as $comment) {
+            $output .= $this->render_single_comment($comment);
         }
         
         return $output;
@@ -610,6 +633,10 @@ class ComentariosFree_Frontend_TwoStep {
         .cf-btn-primary { background: #007cba; color: white; }
         .cf-btn-primary:hover { background: #005a87; }
         .cf-btn-primary:disabled { background: #6c757d; cursor: not-allowed; opacity: 0.7; }
+        
+        /* SEO: Comentarios ocultos visualmente pero accesibles para Google */
+        .cf-hidden-comment { display: none; }
+        .cf-comment-wrapper { /* Contenedor para cada comentario */ }
         
         /* Loader para el botón */
         .cf-btn-loader {
@@ -2456,75 +2483,41 @@ class ComentariosFree_Frontend_TwoStep {
             });
             
             // ================================
-            // CARGAR MÁS COMENTARIOS
+            // CARGAR MÁS COMENTARIOS PROGRESIVAMENTE (SEO-friendly)
             // ================================
             
-            $(document).on("click", "#cf-load-more-btn", function(e) {
+            $(document).on("click", "#cf-show-more-btn", function(e) {
                 e.preventDefault();
                 
                 var $btn = $(this);
                 var $container = $(".cf-comments-list");
-                var postId = $container.data("post-id");
-                var offset = $container.data("offset");
-                var isLoading = $btn.data("loading");
+                var currentVisible = parseInt($container.data("current-visible"));
+                var loadIncrement = parseInt($container.data("load-increment"));
+                var total = parseInt($container.data("total"));
                 
-                if (isLoading) return;
+                // Calcular cuántos comentarios mostrar a continuación
+                var nextVisible = Math.min(currentVisible + loadIncrement, total);
+                var remaining = total - nextVisible;
                 
-                // Mostrar loading
-                var originalText = $btn.html();
-                var loadingText = cfTranslations.js_loading || "Cargando...";
-                $btn.html("⏳ " + loadingText).prop("disabled", true).data("loading", true);
-                
-                $.ajax({
-                    url: comentarios_ajax.ajax_url,
-                    type: "POST",
-                    data: {
-                        action: "comentarios_load_more",
-                        post_id: postId,
-                        offset: offset
-                    },
-                    success: function(response) {
-                        if (response.success && response.data.html) {
-                            // Agregar nuevos comentarios con animación
-                            var $newComments = $(response.data.html);
-                            $newComments.hide();
-                            $container.append($newComments);
-                            $newComments.fadeIn(500);
-                            
-                            // Actualizar offset
-                            var newOffset = offset + response.data.loaded;
-                            $container.data("offset", newOffset);
-                            
-                            // Verificar si hay más comentarios
-                            var total = $container.data("total");
-                            var remaining = total - newOffset;
-                            
-                            if (remaining > 0) {
-                                $btn.html(cfTranslations.load_more + " (" + remaining + " " + cfTranslations.remaining + ")").prop("disabled", false).data("loading", false);
-                            } else {
-                                // No hay más comentarios, ocultar botón
-                                $(".cf-load-more-container").fadeOut(300);
-                            }
-                        } else {
-                            showAlert({
-                                icon: "error",
-                                title: "Error",
-                                text: "No se pudieron cargar más comentarios",
-                                confirmButtonColor: "#007cba"
-                            });
-                            $btn.html(originalText).prop("disabled", false).data("loading", false);
-                        }
-                    },
-                    error: function() {
-                        showAlert({
-                            icon: "error",
-                            title: "Error",
-                            text: "Error de conexión al cargar comentarios",
-                            confirmButtonColor: "#007cba"
-                        });
-                        $btn.html(originalText).prop("disabled", false).data("loading", false);
+                // Mostrar los siguientes comentarios (desde currentVisible hasta nextVisible)
+                $(".cf-comment-wrapper").each(function() {
+                    var index = parseInt($(this).data("comment-index"));
+                    if (index >= currentVisible && index < nextVisible) {
+                        $(this).removeClass("cf-hidden-comment").slideDown(400);
                     }
                 });
+                
+                // Actualizar el contador de visibles
+                $container.data("current-visible", nextVisible);
+                
+                // Actualizar el texto del botón o ocultarlo si ya se mostraron todos
+                if (remaining > 0) {
+                    var nextBatch = Math.min(loadIncrement, remaining);
+                    $btn.html(cfTranslations.load_more + " (" + nextBatch + ")");
+                } else {
+                    // Ya se mostraron todos los comentarios, ocultar el botón
+                    $(".cf-load-more-container").fadeOut(300);
+                }
             });
         });
         </script>';

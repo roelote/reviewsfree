@@ -675,6 +675,107 @@
 }
 
 /* =================================================================
+   HACER TABLA RESPONSIVE - SCROLL HORIZONTAL EN MÓVILES
+   ================================================================= */
+
+.cf-comments-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar personalizado y visible */
+.cf-comments-table-container::-webkit-scrollbar {
+    height: 12px;
+}
+
+.cf-comments-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.cf-comments-table-container::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+
+.cf-comments-table-container::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}
+
+/* Para Firefox */
+.cf-comments-table-container {
+    scrollbar-width: auto;
+    scrollbar-color: #3498db #f1f1f1;
+}
+
+.cf-comments-table {
+    width: 100%;
+    table-layout: auto !important;
+}
+
+/* Asegurar que las columnas no colapsen en móvil */
+.cf-comments-table td,
+.cf-comments-table th {
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.cf-comments-table .cf-col-rating {
+    min-width: 120px;
+}
+
+.cf-comments-table .cf-col-product {
+    min-width: 200px;
+}
+
+.cf-comments-table .cf-col-title {
+    min-width: 180px;
+    max-width: 300px;
+}
+
+.cf-comments-table .cf-col-status {
+    min-width: 120px;
+}
+
+.cf-comments-table .cf-col-date {
+    min-width: 110px;
+}
+
+.cf-comments-table .cf-col-actions {
+    min-width: 150px;
+}
+
+/* Permitir wrap solo en título y contenido */
+.cf-comment-title,
+.cf-comment-excerpt {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* =================================================================
+   SOBRESCRIBIR ESTILOS DE WORDPRESS EN MÓVIL
+   ================================================================= */
+
+/* Mantener tamaño normal de botones en nuestra tabla en móviles */
+@media screen and (max-width: 782px) {
+    .cf-comments-table .button,
+    .cf-comments-table .button-small {
+        padding: 0 8px !important;
+        line-height: 1.8 !important;
+        font-size: 11px !important;
+        min-height: 26px !important;
+        height: auto !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .cf-actions-group {
+        gap: 4px !important;
+    }
+}
+
+/* =================================================================
    RESPONSIVE DESIGN
    ================================================================= */
 
@@ -706,22 +807,58 @@
         align-items: center;
     }
     
+    /* IMPORTANTE: Forzar scroll horizontal en la tabla */
     .cf-comments-table-container {
-        overflow-x: auto;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        display: block;
     }
     
     .cf-comments-table {
-        min-width: 800px;
+        min-width: 900px !important;
+        table-layout: auto !important;
     }
     
     .cf-actions-group {
         flex-direction: row;
         flex-wrap: wrap;
+        gap: 3px;
+    }
+    
+    .cf-actions-group .button {
+        font-size: 12px;
+        padding: 4px 6px;
     }
     
     .comentarios-user-dashboard .wrap {
         padding: 15px;
         margin: 10px 0;
+    }
+    
+    /* Mejorar visualización de botones en panel de usuario móvil */
+    .user-comment-item .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .user-comment-item .comment-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .user-comment-item .comment-actions .comentarios-btn {
+        flex: 0 0 auto;
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        white-space: nowrap;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -736,6 +873,37 @@
     
     .cf-empty-icon {
         font-size: 48px;
+    }
+    
+    /* Asegurar que los botones sean táctiles en móviles pequeños */
+    .user-comment-item .comment-actions .comentarios-btn {
+        min-height: 44px;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+    }
+    
+    /* Ajustar el header del comentario para mejor espaciado */
+    .user-comment-item .comment-info {
+        width: 100%;
+    }
+    
+    .user-comment-item .comment-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    /* Modal en pantallas muy pequeñas */
+    #cf-user-edit-modal .cf-modal-header h2 {
+        font-size: 14px;
+    }
+    
+    #cf-user-edit-modal .cf-user-badge {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+    
+    #cf-user-edit-modal .cf-modal-body {
+        padding: 10px;
     }
 }
 
@@ -1412,13 +1580,24 @@
 
 #cf-user-edit-modal {
     z-index: 999999 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #cf-user-edit-modal .cf-modal-content.cf-compact {
     max-width: 1000px;
-    max-height: 85vh;
+    max-height: none;
     width: 95%;
     z-index: 1000000 !important;
+    position: relative;
+    margin: 20px auto;
+    overflow: visible;
 }
 
 #cf-user-edit-modal .cf-modal-header {
@@ -1608,26 +1787,309 @@
 
 /* Responsive para modal de usuario */
 @media (max-width: 768px) {
+    #cf-user-edit-modal {
+        padding: 0 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        align-items: flex-start !important;
+    }
+    
+    /* IMPORTANTE: Solo mostrar cuando tenga estilo inline display */
+    #cf-user-edit-modal[style*="display: block"],
+    #cf-user-edit-modal[style*="display: flex"] {
+        display: flex !important;
+    }
+    
+    #cf-user-edit-modal[style*="display: none"] {
+        display: none !important;
+    }
+    
+    #cf-user-edit-modal .cf-modal-overlay {
+        display: none;
+    }
+    
+    #cf-user-edit-modal .cf-modal-content.cf-compact {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    
+    #cf-user-edit-modal .cf-modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 8px 10px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    #cf-user-edit-modal .cf-modal-header h2 {
+        font-size: 14px;
+    }
+    
+    #cf-user-edit-modal .cf-close-modal {
+        font-size: 28px;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #cf-user-edit-modal .cf-modal-body {
+        flex: 1;
+        overflow-y: visible;
+        overflow-x: hidden;
+        padding: 8px;
+        padding-bottom: 70px;
+    }
+    
     #cf-user-edit-modal .cf-form-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 15px;
+        display: block !important;
+        width: 100%;
+        padding: 0 !important;
+    }
+    
+    #cf-user-edit-modal .cf-form-grid-2cols {
+        display: block !important;
+        width: 100%;
+        padding: 0 !important;
+    }
+    
+    #cf-user-edit-modal .cf-form-column {
+        display: block !important;
+        width: 100%;
+        margin-bottom: 0;
     }
     
     .cf-user-info-compact {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
+        flex-direction: row;
+        text-align: left;
+        gap: 6px;
+        padding: 6px 8px;
+        margin: 0;
+        font-size: 11px;
+    }
+    
+    #cf-user-edit-modal .cf-user-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+    
+    #cf-user-edit-modal .cf-user-name {
+        font-size: 12px;
+    }
+    
+    #cf-user-edit-modal .cf-edit-warning {
+        font-size: 10px;
     }
     
     #cf-user-edit-modal .cf-modal-footer {
-        flex-direction: column;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: white;
+        border-top: 2px solid #e9ecef;
+        padding: 6px 8px;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 6px;
+        z-index: 100;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        margin: 0;
     }
     
     #cf-user-edit-modal .cf-btn-cancel,
-    #cf-user-edit-modal .cf-btn-save {
-        width: 100%;
+    #cf-user-edit-modal .cf-btn-save,
+    #cf-user-edit-modal .button.cf-btn-cancel,
+    #cf-user-edit-modal .button.button-primary.cf-btn-save {
+        flex: 1;
         text-align: center;
+        padding: 6px 8px !important;
+        font-size: 13px !important;
+        min-height: 34px !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+        font-weight: 600 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px;
+        cursor: pointer;
+    }
+    
+    #cf-user-edit-modal .cf-form-group {
+        margin-bottom: 8px !important;
+        background: #f8f9fa !important;
+        padding: 6px 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e9ecef !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: block !important;
+    }
+    
+    #cf-user-edit-modal .cf-form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+        display: block;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    #cf-user-edit-modal .cf-input-compact,
+    #cf-user-edit-modal textarea.cf-input-compact,
+    #cf-user-edit-modal select.cf-input-compact,
+    #cf-user-edit-modal input[type="text"],
+    #cf-user-edit-modal input[type="file"],
+    #cf-user-edit-modal textarea,
+    #cf-user-edit-modal select {
+        font-size: 12px !important;
+        padding: 4px 6px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+        background: white !important;
+        transition: border-color 0.3s ease;
+        line-height: 1.3 !important;
+    }
+    
+    #cf-user-edit-modal .cf-input-compact:focus,
+    #cf-user-edit-modal textarea.cf-input-compact:focus,
+    #cf-user-edit-modal select.cf-input-compact:focus,
+    #cf-user-edit-modal input[type="text"]:focus,
+    #cf-user-edit-modal textarea:focus,
+    #cf-user-edit-modal select:focus {
+        border-color: #28a745 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1) !important;
+    }
+    
+    #cf-user-edit-modal textarea.cf-input-compact {
+        min-height: 60px;
+    }
+    
+    #cf-user-edit-modal .cf-current-images {
+        max-height: none;
+        background: white;
+        border: 1px dashed #ced4da;
+        border-radius: 4px;
+        padding: 8px;
+        min-height: 60px;
+    }
+    
+    #cf-user-edit-modal .cf-form-photos-section {
+        margin-bottom: 10px !important;
+        background: #f8f9fa !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e9ecef !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: block !important;
+    }
+    
+    #cf-user-edit-modal .cf-form-photos-section label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 4px;
+        display: block;
+    }
+    
+    #cf-user-edit-modal .cf-file-input {
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+        padding: 6px !important;
+        background: white !important;
+        margin-bottom: 5px;
+        font-size: 13px !important;
+    }
+    
+    #cf-user-edit-modal .cf-file-help {
+        font-size: 11px;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 5px;
+        display: block;
+        line-height: 1.3;
+    }
+    
+    #cf-user-edit-modal .cf-current-image {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 3px;
+        background: white;
+    }
+    
+    #cf-user-edit-modal .cf-no-images {
+        color: #6c757d;
+        font-style: italic;
+        text-align: center;
+        padding: 12px;
+        font-size: 12px;
+    }
+    
+    #cf-user-edit-modal small {
+        font-size: 10px;
+        color: #6c757d;
+        display: block;
+        margin-top: 3px;
+        line-height: 1.2;
+    }
+    
+    #cf-user-edit-modal .cf-required {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    #cf-user-edit-modal .cf-country-autocomplete-container {
+        position: relative;
+        width: 100%;
+    }
+    
+    #cf-user-edit-modal .cf-country-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #28a745;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Asegurar que select también se vea bien */
+    #cf-user-edit-modal select.cf-input-compact {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 20px;
+        padding-right: 40px !important;
     }
 }
 
